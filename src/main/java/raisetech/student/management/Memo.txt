@@ -1,0 +1,105 @@
+package raisetech.student.management;
+
+import ch.qos.logback.core.util.StringUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@RestController
+public class Application {
+
+  private String name = "hayashi mitsuteru";
+  private String age = "37";
+  private Map<String,String> studentMap = new LinkedHashMap<>();
+//  private Map<String,String> studentMap2 = new HashMap<>();
+
+  public static void main(String[] args) {
+    // localhost:8080
+    SpringApplication.run(Application.class, args);
+  }
+
+
+  @GetMapping("/studentInfo")  // Http://localhost:8080/helloに対して実行
+  public String getstudentInfo() {   // hello 引数に下の言葉がreturn帰って来る
+    return name + " " + age + "歳";
+  }
+
+  @PostMapping("/studentInfo")  // Http://localhost:8080/helloに対して実行
+  public void setstudentInfo(String name, String age) {   // hello 引数に下の言葉がreturn帰って来る
+    this.name = name;
+    this.age= age;
+  }
+
+  @GetMapping("/studentMap")
+  public Map<String, String> studentMap() {
+    studentMap.put("Hayashi","20歳");
+    studentMap.put("Enami","30歳");
+    return studentMap;
+  }
+
+  @GetMapping("/studentMap2")
+  public List<String> students() {
+    List<String> students = new ArrayList<>();
+    students.add("Hayashi (50歳)");
+    students.add("Enami (40歳)");
+    return students;
+  }
+
+  @PostMapping("/studentMap2")
+  public void  studentsMap2(Map<String,String> reqest) {
+    this.students();
+  }
+
+  @GetMapping("/studentMap3")
+  @ResponseBody
+  public String studentMap3() {
+    return "Hayashi (52歳)\nEnami (37歳)";
+  }
+
+//  @PostMapping("/studentMap3")
+//  public void studentMap() {
+//    this.studentMap();
+//  }
+
+//  @GetMapping("/name")  // Http://localhost:8080/helloに対して実行
+//  public String getName() {   // hello 引数に下の言葉がreturn帰って来る
+//    return name;
+//  }
+
+//  @PostMapping("/name")
+//  public void setName(String name) {
+//    this.name = name;  // このクラスにあるnameに対して引数のnameを設定する
+//  }
+
+  @PostMapping("/studentName")
+  public void updateStudentName(String name) {
+    this.name = name;  // このクラスにあるnameに対して引数のnameを設定する
+  }
+}
+
+//  @GetMapping("/hello")  // Http://localhost:8080/helloに対して実行
+//  public String hello() {   // hello 引数に下の言葉がreturn帰って来る
+//    return "Hello, World! Nice";
+//  }
+
+//  @GetMapping("/sayhello")  // Http://localhost:8080/helloに対して実行
+//  public String sayhelloo() {   // 上のURL/sayhelloと基本は同じ名前を付けるが、違っていても問題はない
+//    return "Hello, Hello";
+//  }
+//
+//  @GetMapping("/evening")  // Http://localhost:8080/helloに対して実行
+//  public String evening() {   // hello 引数に下の言葉がreturn帰って来る
+//    return "Good evening あいうえお";
+//  }
+//}
+// 下のターミナルで動作を確認する時は、仮想サーバーとしてのintellij(上のプログラム)を実行していないとエラーとなる
