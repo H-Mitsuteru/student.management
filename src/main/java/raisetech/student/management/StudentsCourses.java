@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StudentCourses {
+public class StudentsCourses {
 
   private String studentID;   // アンダーバーはキャメルケースに変換する命名ルールの為入力しない
   private String name;

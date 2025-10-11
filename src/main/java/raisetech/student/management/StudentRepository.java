@@ -20,7 +20,7 @@ public interface StudentRepository {
     FROM students_courses sc
     JOIN students s ON sc.student_id = s.student_id
   """)
-  List<StudentCourses> search2();
+  List<StudentsCourses> searchStudentsCourses();
 
 }
 
