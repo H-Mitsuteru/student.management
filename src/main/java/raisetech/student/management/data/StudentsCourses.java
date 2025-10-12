@@ -1,4 +1,4 @@
-package raisetech.student.management;
+package raisetech.student.management.data;
 
 import java.sql.Date;
 import lombok.Getter;
@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class StudentsCourses {
 
+  private String id;
   private String studentID;   // アンダーバーはキャメルケースに変換する命名ルールの為入力しない
   private String name;
   private String courseName;
