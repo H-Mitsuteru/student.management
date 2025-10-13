@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Student {
 
-  private String id;
+  private String studentID;
   private String name;
   private String furigana;
   private String nickname;
@@ -15,6 +15,8 @@ public class Student {
   private String liveMunicipality;    // Live_municipalityをLiveMunicipalityと大文字にしてもOK
   private int age;
   private String gender;
+//  private String remark;
+//  private boolean isDeleted;
 
 }
 

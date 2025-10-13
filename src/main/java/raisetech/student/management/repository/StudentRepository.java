@@ -23,16 +23,16 @@ public interface StudentRepository {
   @Select("SELECT * FROM students")
   List<Student> search(); // 個別情報取得
 
-//  @Select("SELECT * FROM students_courses")
-  @Select("""
-    SELECT s.student_id AS studentId,
-           s.name AS name,
-           sc.course_name AS courseName,
-           sc.start_date AS startDate,
-           sc.end_date AS endDate
-    FROM students_courses sc
-    JOIN students s ON sc.student_id = s.student_id
-  """)
+  @Select("SELECT * FROM students_courses")
+//  @Select("""
+//    SELECT s.student_id AS studentId,
+//           s.name AS name,
+//           sc.course_name AS courseName,
+//           sc.start_date AS startDate,
+//           sc.end_date AS endDate
+//    FROM students_courses sc
+//    JOIN students s ON sc.student_id = s.student_id
+//  """)
   List<StudentsCourses> searchStudentsCourses();
 
 }

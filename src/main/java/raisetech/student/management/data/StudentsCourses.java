@@ -8,9 +8,8 @@ import lombok.Setter;
 @Setter
 public class StudentsCourses {
 
-  private String id;
+  private String courseID;
   private String studentID;   // アンダーバーはキャメルケースに変換する命名ルールの為入力しない
-  private String name;
   private String courseName;
   private Date startDate;
   private Date endDate;
