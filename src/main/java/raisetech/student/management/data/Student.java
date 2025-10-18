@@ -15,8 +15,8 @@ public class Student {
   private String liveMunicipality;    // Live_municipalityをLiveMunicipalityと大文字にしてもOK
   private int age;
   private String gender;
-//  private String remark;
-//  private boolean isDeleted;
+  private String remark;
+  private boolean isDeleted;
 
 }
 
