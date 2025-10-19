@@ -18,6 +18,10 @@ public class StudentService {
     this.repository = repository;
   }
 
+  public void insertStudent(Student student) {
+    repository.insertStudent(student);
+  }
+
   public List<Student> searchStudentList() {
     return repository.search();
   }

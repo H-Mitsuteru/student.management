@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.lang.model.element.ModuleElement;
 import javax.naming.Binding;
+import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,9 +57,10 @@ public class StudentController {
     if(result.hasErrors()) {  // エラーがあったら元の画面に戻す
       return "resisterStudent";
     }
-    System.out.println(studentDetail.getStudent().getName() + "さんが新規受講生として登録されました。");
-    // 新規受講生情報を登録する処理を実装する。
+    // 新規受講生情報を登録する処理を実装する
+    service.insertStudent(studentDetail.getStudent());
+
     // コース情報も一緒に登録できる様に実装する。コースは単体で良い。
-  return "redirect:/studentList";
+  return "redirect:/studentList"; // 受講一覧を実行
   }
 }
