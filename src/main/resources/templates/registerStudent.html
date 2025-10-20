@@ -9,6 +9,7 @@
   <div>
     <label for="studentID">ID:</label>
     <input type="text" id="studentID" th:field="*{student.studentID}" required />
+    <!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
   </div>
   <div>
     <label for="name">名前:</label>
@@ -32,7 +33,21 @@
   </div>
   <div>
     <label for="age">年齢:</label>
-    <input type="Intager" id="age" th:field="*{student.age}" required />
+    <input type="number" id="age" th:field="*{student.age}" required />
+  </div>
+  <div>
+    <label for="gender">性別：</label>
+    <select id="gender" th:field="*{student.gender}" required>
+      <option value="">選択してください</option>
+      <option value="男">男</option>
+      <option value="女">女</option>
+      <option value="その他">その他</option>
+      <option value="非公開">非公開</option>
+    </select>
+  </div>
+  <div>
+    <label for="remark">備考:</label>
+    <input type="text" id="remark" th:field="*{student.remark}" />
   </div>
   <div>
     <button type="submit">登録</button>
