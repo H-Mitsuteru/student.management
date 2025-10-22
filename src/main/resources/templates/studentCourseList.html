@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>受講生コース一覧（コース単位・受講中対応）</title>
+</head>
+<body>
+<h1>受講生コース一覧（コース単位・受講中対応）</h1>
+<table border="1">
+  <thead>
+  <tr>
+    <th>受講生ID</th>
+    <th>名前</th>
+    <th>コースID</th>
+    <th>コース名</th>
+    <th>開始日</th>
+    <th>終了日</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <!-- 受講生ごとのループ -->
+  <th:block th:each="studentDetail : ${studentList}">
+    <!-- 各受講生のコースをループ -->
+    <tr th:each="course : ${studentDetail.studentsCourses}">
+      <td th:text="${studentDetail.student.studentID}">stu001</td>
+      <td th:text="${studentDetail.student.name}">林弥津輝</td>
+      <td th:text="${course.courseID}">crs0001</td>
+      <td th:text="${course.courseName}">Java入門</td>
+      <td th:text="${course.startDate}">2025-04-01</td>
+      <td>
+        <span th:if="${course.endDate != null}" th:text="${course.endDate}">2025-06-30</span>
+        <span th:unless="${course.endDate != null}">受講中</span>
+      </td>
+    </tr>
+  </th:block>
+
+  </tbody>
+</table>
+</body>
+</html>

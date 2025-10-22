@@ -42,9 +42,26 @@ public class StudentController {
   }
 
   @GetMapping("/studentCourseList")
-  public List<StudentsCourses> getStudentCourseList() {
-    return service.searchStudentsCourseList();
+  public String getStudentCourseList(Model model) {
+    // 学生とコース情報を取得
+    List<Student> students = service.searchStudentList();
+    List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
+
+    // 学生ごとにコースをまとめる
+    List<StudentDetail> studentDetails = converter.convertStudentDetails(students, studentsCourses);
+
+    // HTMLに渡すデータ名は studentList（HTML側と一致）
+    model.addAttribute("studentList", studentDetails);
+
+    // 表示するHTML名（拡張子は不要）
+    return "studentCourseList";
   }
+
+
+//  @GetMapping("/studentCourseList")
+//  public List<StudentsCourses> getStudentCourseList() {
+//    return service.searchStudentsCourseList();
+//  }
 
   @GetMapping("/newStudent")
   public String newStudent(Model model) {
