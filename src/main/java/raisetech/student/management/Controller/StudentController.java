@@ -57,7 +57,6 @@ public class StudentController {
     return "studentCourseList";
   }
 
-
 //  @GetMapping("/studentCourseList")
 //  public List<StudentsCourses> getStudentCourseList() {
 //    return service.searchStudentsCourseList();
@@ -67,6 +66,12 @@ public class StudentController {
   public String newStudent(Model model) {
     model.addAttribute("studentDetail", new StudentDetail()); // 中身空っぽのStudentDetailを突っ込んでおく
     return "registerStudent";
+  }
+
+  @GetMapping("/newStudentCourse")
+  public String newStudentCourse(Model model) {
+    model.addAttribute("studentDetail", new StudentDetail());
+    return "registerStudentCourse";
   }
 
   @PostMapping("/registerStudent")
@@ -79,5 +84,16 @@ public class StudentController {
 
     // コース情報も一緒に登録できる様に実装する。コースは単体で良い。
   return "redirect:/studentList"; // 受講一覧を実行
+  }
+
+  @PostMapping("/registerStudentCourse")
+  public String registerStudentCourse(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if(result.hasErrors()) {
+      return "resisterStudentCourse";
+    }
+//    service.insertStudentCourse((StudentsCourses) studentDetail.getStudentsCourses());
+//    return "redirect:/studentCourseList";
+    service.insertStudentCourse(studentDetail.getStudentCourse());
+    return "redirect:/studentCourseList";
   }
 }

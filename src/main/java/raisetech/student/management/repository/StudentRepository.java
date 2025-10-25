@@ -65,6 +65,24 @@ public interface StudentRepository {
     """)
   void insertStudent(Student student);
 
+  // 受講生登録
+  @Insert("""
+        INSERT INTO students_Courses (
+            course_id,
+            student_id,
+            course_name,
+            start_date,
+            end_date
+        )
+        VALUES (
+            #{courseID},
+            #{studentID},
+            #{courseName},
+            #{startDate},
+            #{endDate}
+        )
+    """)
+  void insertStudentCourse(StudentsCourses studentsCourses);
 }
 
 //  @Select("SELECT * FROM students WHERE name = #{name}")

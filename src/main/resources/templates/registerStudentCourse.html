@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>　<!-- 設定情報(タイトルなど)を入れる場所 -->
+  <title>受講生コース登録</title>
+</head>
+<body>　<!-- 一つのHTML文章に必ず1回だけ。ページに表示される要素は全てこの中に -->
+<h1>受講生コース登録</h1>
+<form th:action="@{/registerStudentCourse}" th:object="${studentDetail}" method="post">
+  <div>
+    <label for="courseID">コースID:</label>
+    <input type="text" id="courseID" th:field="*{studentCourse.courseID}" required />
+    <!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
+  </div>  <div>
+    <label for="studentID">受講生ID:</label>
+    <input type="text" id="studentID" th:field="*{studentCourse.studentID}" required />
+    <!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
+  </div>
+  <div>
+    <label for="courseName">コース名:</label>
+    <input type="text" id="courseName" th:field="*{studentCourse.courseName}" required />
+  </div>
+  <div>
+    <label for="startDate">開始日:</label>
+    <input type="date" id="startDate" th:field="*{studentCourse.startDate}" required />
+  </div>
+  <div>
+    <label for="endDate">終了日:</label>
+    <input type="date" id="endDate" th:field="*{studentCourse.endDate}" required />
+  </div>
+  <div>
+    <button type="submit">登録</button>
+  </div>
+</form>
+
+</body>
+</html>
