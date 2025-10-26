@@ -6,11 +6,11 @@
 <body>　<!-- 一つのHTML文章に必ず1回だけ。ページに表示される要素は全てこの中に -->
 <h1>受講生登録</h1>
 <form th:action="@{/registerStudent}" th:object="${studentDetail}" method="post">
-  <div>
+<!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
+<!--  <div>
     <label for="studentID">ID:</label>
-    <input type="text" id="studentID" th:field="*{student.studentID}" required />
-    <!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
-  </div>
+    <input type="number" id="studentID" th:field="*{student.studentID}" required />
+  </div> -->
   <div>
     <label for="name">名前:</label>
     <input type="text" id="name" th:field="*{student.name}" required />

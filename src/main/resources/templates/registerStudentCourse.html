@@ -8,7 +8,7 @@
 <form th:action="@{/registerStudentCourse}" th:object="${studentDetail}" method="post">
   <div>
     <label for="courseID">コースID:</label>
-    <input type="text" id="courseID" th:field="*{studentCourse.courseID}" required />
+    <input type="number" id="courseID" th:field="*{studentCourse.courseID}" required />
     <!-- required: HTMLのバリデーション属性。未入力だと送信できない -->
   </div>  <div>
     <label for="studentID">受講生ID:</label>

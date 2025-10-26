@@ -3,6 +3,7 @@ package raisetech.student.management.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
@@ -37,33 +38,12 @@ public interface StudentRepository {
   List<StudentsCourses> searchStudentsCourses();
 
   // 受講生登録
-  @Insert("""
-        INSERT INTO students (
-            student_id,
-            name,
-            furigana,
-            e_mail,
-            nickname,
-            live_municipality,
-            age,
-            gender,
-            remark,
-            is_deleted
-        )
-        VALUES (
-            #{studentID},
-            #{name},
-            #{furigana},
-            #{email},
-            #{nickname},
-            #{liveMunicipality},
-            #{age},
-            #{gender},
-            #{remark},
-            false
-        )
-    """)
-  void insertStudent(Student student);
+//            #{studentID}, は自動生成なので省略
+  // students の後の項目名を省略すると全項目が対象となる
+  @Insert("INSERT INTO students (name, furigana, nickname, e_mail, live_municipality, age, gender, remark, is_deleted) "
+      + "VALUES (#{name}, #{furigana}, #{nickname}, #{email}, #{liveMunicipality}, #{age}, #{gender}, #{remark}, false) ")
+  @Options(useGeneratedKeys = true, keyProperty = "studentID")
+  void registerStudent(Student student);
 
   // 受講生登録
   @Insert("""

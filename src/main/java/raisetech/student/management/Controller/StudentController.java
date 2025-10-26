@@ -80,7 +80,7 @@ public class StudentController {
       return "resisterStudent";
     }
     // 新規受講生情報を登録する処理を実装する
-    service.insertStudent(studentDetail.getStudent());
+    service.registerStudent(studentDetail);
 
     // コース情報も一緒に登録できる様に実装する。コースは単体で良い。
   return "redirect:/studentList"; // 受講一覧を実行
