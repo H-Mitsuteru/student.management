@@ -41,28 +41,27 @@ public interface StudentRepository {
 //            #{studentID}, は自動生成なので省略
   // students の後の項目名を省略すると全項目が対象となる
   @Insert("INSERT INTO students (name, furigana, nickname, e_mail, live_municipality, age, gender, remark, is_deleted) "
-      + "VALUES (#{name}, #{furigana}, #{nickname}, #{email}, #{liveMunicipality}, #{age}, #{gender}, #{remark}, false) ")
+      + "VALUES(#{name}, #{furigana}, #{nickname}, #{email}, #{liveMunicipality}, #{age}, #{gender}, #{remark}, false) ")
   @Options(useGeneratedKeys = true, keyProperty = "studentID")
   void registerStudent(Student student);
 
   // 受講生登録
   @Insert("""
         INSERT INTO students_Courses (
-            course_id,
             student_id,
             course_name,
             start_date,
             end_date
         )
-        VALUES (
-            #{courseID},
+        VALUES(
             #{studentID},
             #{courseName},
             #{startDate},
             #{endDate}
         )
     """)
-  void insertStudentCourse(StudentsCourses studentsCourses);
+  @Options(useGeneratedKeys = true, keyProperty = "studentID")
+  void registerStudentsCourses(StudentsCourses studentsCourses);
 }
 
 //  @Select("SELECT * FROM students WHERE name = #{name}")
