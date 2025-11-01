@@ -16,20 +16,6 @@ public class StudentConverter {
     students.forEach(student -> {
       StudentDetail studentDetail = new StudentDetail();
       studentDetail.setStudent(student);
-      // 以下を選択して リファクタリング-> メソッド抽出すると上の様になる。
-//      List<StudentDetail> studentDetails = new ArrayList<>();
-//      students.forEach(student -> {
-//        StudentDetail studentDetail = new StudentDetail();
-//        studentDetail.setStudent(student);
-
-//      List<StudentsCourses> convertStudentCourses = new ArrayList<>();
-//      for (StudentsCourses studentCourses : studentsCourses) {
-//        if (student.getStudentID() != null && student.getStudentID()
-//            .equals(studentCourses.getStudentID())) {
-//          convertStudentCourses.add(studentCourses);
-//        }
-//      }
-      // 上の処理 collectを含むループを折りたたむと下になる。
       List<StudentsCourses> convertStudentCourses = studentsCourses.stream()
           .filter(studentCourses -> student.getStudentID() != null && student.getStudentID()
               .equals(studentCourses.getStudentID()))

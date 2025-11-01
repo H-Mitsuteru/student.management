@@ -1,8 +1,6 @@
 package raisetech.student.management.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,27 +24,36 @@ public class StudentService {
     return repository.search();
   }
 
+  public StudentDetail searchStudent(String id) {
+    Student student = repository.searchStudent(id);
+    List<StudentsCourses> studentsCourses = repository.searchStudentsCourses(student.getStudentID());
+    StudentDetail studentDetail = new StudentDetail();
+    studentDetail.setStudent(student);
+    studentDetail.setStudentsCourses(studentsCourses);
+    return studentDetail;
+  }
+
   public List<StudentsCourses> searchStudentsCourseList() {
-    return repository.searchStudentsCourses();
+    return repository.searchStudentsCoursesList();
   }
 
   @Transactional // 登録、更新した時のエラーをロールバックしてくれる
   public void registerStudent(StudentDetail studentDetail) {
     repository.registerStudent(studentDetail.getStudent());
-    // TODO:コース情報登録を行う。
-    for (StudentsCourses studentsCourses : studentDetail.getStudentsCourses()) {
-      studentsCourses.setStudentID(studentDetail.getStudent().getStudentID());
-      studentsCourses.setStartDate(LocalDateTime.now());
-      studentsCourses.setEndDate(LocalDateTime.now().plusYears(1));
-      repository.registerStudentsCourses(studentsCourses);
+    for (StudentsCourses studentsCourse : studentDetail.getStudentsCourses()) {
+      studentsCourse.setStudentID(studentDetail.getStudent().getStudentID());
+      studentsCourse.setStartDate(LocalDateTime.now());
+      studentsCourse.setEndDate(LocalDateTime.now().plusYears(1));
+      repository.registerStudentsCourses(studentsCourse);
     }
   }
-//  public void insertStudent(Student student) {
-//    repository.insertStudent(student);
-//  }
 
-//  public void insertStudentCourse(StudentsCourses studentsCourses) {
-//    repository.insertStudentCourse(studentsCourses);
-//  }
-
+  @Transactional // 登録、更新した時のエラーをロールバックしてくれる
+  public void updateStudent(StudentDetail studentDetail) {
+    repository.updateStudent(studentDetail.getStudent());
+    for (StudentsCourses studentsCourse : studentDetail.getStudentsCourses()) {
+      studentsCourse.setStudentID(studentDetail.getStudent().getStudentID());
+      repository.updateStudentsCourses(studentsCourse);
+    }
+  }
 }
