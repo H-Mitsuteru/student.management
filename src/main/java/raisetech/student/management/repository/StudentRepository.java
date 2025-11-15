@@ -20,7 +20,6 @@ public interface StudentRepository {
    *
    * @return 受講生一覧(全件)
    */
-  @Select("SELECT * FROM students")
   List<Student> search(); // 個別情報取得
 
   /**
@@ -29,7 +28,6 @@ public interface StudentRepository {
    * @param id　受講生ID
    * @return　受講生
    */
-  @Select("SELECT * FROM students WHERE student_id = #{studentID}")
   Student searchStudent(String id);
 
   /**
