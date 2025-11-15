@@ -21,7 +21,7 @@
   <!-- 受講生ごとのループ -->
   <th:block th:each="studentDetail : ${studentList}">
     <!-- 各受講生のコースをループ -->
-    <tr th:each="course : ${studentDetail.studentsCourses}">
+    <tr th:each="course : ${studentDetail.studentCourses}">
       <td th:text="${studentDetail.student.studentID}">stu001</td>
       <td th:text="${studentDetail.student.name}">林弥津輝</td>
       <td th:text="${course.courseID}">crs0001</td>
