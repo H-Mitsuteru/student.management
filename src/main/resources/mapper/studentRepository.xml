@@ -7,15 +7,12 @@
 
   <!-- 受講生の全件検索 -->
   <select id="search" resultType="raisetech.student.management.data.Student">
-    SELECT *
-    FROM students
+    SELECT * FROM students
   </select>
 
   <!-- 受講生の検索 -->
   <select id="searchStudent" resultType="raisetech.student.management.data.Student">
-    SELECT *
-    FROM students
-    WHERE student_id = #{studentID}
+    SELECT * FROM students WHERE student_id = #{studentID}
   </select>
 
 </mapper>

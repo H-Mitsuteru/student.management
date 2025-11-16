@@ -20,6 +20,7 @@ public interface StudentRepository {
    *
    * @return 受講生一覧(全件)
    */
+  // @Select("SELECT * FROM student") -> studentRepository.xmlへ移行
   List<Student> search(); // 個別情報取得
 
   /**
@@ -48,9 +49,8 @@ public interface StudentRepository {
   List<StudentCourse> searchStudentCourse(String studentID);
 
   // 受講生登録
-//            #{studentID}, は自動生成なので省略
+  //            #{studentID}, は自動生成なので省略
   // students の後の項目名を省略すると全項目が対象となる
-
   /**
    * 受講生新規登録します。 IDに関しては自動採番を行う。
    *
@@ -61,8 +61,8 @@ public interface StudentRepository {
   @Options(useGeneratedKeys = true, keyProperty = "studentID")
   void registerStudent(Student student);
 
-  // 受講生登録
 
+  // 受講生登録
   /**
    * 受講生コース情報を新規登録します。 IDに関しては自動採番を行う。
    * @param studentCourse　受講生コース情報
@@ -94,7 +94,6 @@ public interface StudentRepository {
     + "remark = #{remark}, is_deleted = #{isDeleted} WHERE student_id = #{studentID}")
 void updateStudent(Student student);
 
-// 受講生登録
 
   /**
    * 受講生コース情報のコース名を更新します。

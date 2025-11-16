@@ -62,9 +62,9 @@ public class StudentService {
     Student student = studentDetail.getStudent();
 
     repository.registerStudent(student);
-    studentDetail.getStudentCourseList().forEach(studentsCourse -> {
-      initStudentsCourse(studentsCourse, student);
-      repository.registerStudentCourse(studentsCourse);
+    studentDetail.getStudentCourseList().forEach(studentCourse -> {
+      initStudentsCourse(studentCourse, student.getStudentID());
+      repository.registerStudentCourse(studentCourse);
     });
     return studentDetail;
   }
@@ -73,12 +73,12 @@ public class StudentService {
    * 受講生コース情報を登録する際の初期情報を設定する。
    *
    * @param studentCourse　受講生コース情報
-   * @param student　受講生
+   * @param studentID　受講生
    */
-  private static void initStudentsCourse(StudentCourse studentCourse, Student student) {
+ void initStudentsCourse(StudentCourse studentCourse, String studentID) {
     LocalDateTime now = LocalDateTime.now();
 
-    studentCourse.setStudentID(student.getStudentID());
+    studentCourse.setStudentID(studentID);
     studentCourse.setStartDate(now);
     studentCourse.setEndDate(now.plusYears(1));
   }
