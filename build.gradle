@@ -15,14 +15,34 @@ java {
 	}
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+    // Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // OpenAPI Generator
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
+
     // Appache commons lang ：便利機能 ユーティリティ
     implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     // MySQLドライバ
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -30,8 +50,16 @@ dependencies {
     // MyBatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
 
+    // APサーバー(Tomcat)
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    // SpringBoot Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // MyBatis Test
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
+    // H2(InMemoryDB): 一時的なデータベース
+    testImplementation 'com.h2database:h2:2.2.224'
+
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

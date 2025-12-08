@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>　<!-- 設定情報(タイトルなど)を入れる場所 -->
+  <title>受講生詳細</title>
+</head>
+<body>　<!-- 一つのHTML文章に必ず1回だけ。ページに表示される要素は全てこの中に -->
+<h1>受講生詳細</h1>
+<form th:action="@{/updateStudent}" th:object="${studentDetail}" method="post">
+  <div>
+    <label for="student_id">ID:</label>
+    <input type="text" id="student_id" th:field="*{student.studentID}" required />
+  </div>
+  <div>
+    <label for="name">名前:</label>
+    <input type="text" id="name" th:field="*{student.name}" required />
+  </div>
+  <div>
+    <label for="furigana">フリガナ:</label>
+    <input type="text" id="furigana" th:field="*{student.furigana}" required />
+  </div>
+  <div>
+    <label for="nickname">ニックネーム:</label>
+    <input type="text" id="nickname" th:field="*{student.nickname}" />
+  </div>
+  <div>
+    <label for="email">メールアドレス:</label>
+    <input type="email" id="email" th:field="*{student.email}" required />
+  </div>
+  <div>
+    <label for="liveMunicipality">地域:</label>
+    <input type="text" id="liveMunicipality" th:field="*{student.liveMunicipality}" required />
+  </div>
+  <div>
+    <label for="age">年齢:</label>
+    <input type="number" id="age" th:field="*{student.age}" required />
+  </div>
+  <div>
+    <label for="gender">性別：</label>
+    <select id="gender" th:field="*{student.gender}" required>
+      <option value="">選択してください</option>
+      <option value="男">男</option>
+      <option value="女">女</option>
+      <option value="その他">その他</option>
+      <option value="非公開">非公開</option>
+    </select>
+  </div>
+  <div>
+    <label for="remark">備考:</label>
+    <input type="text" id="remark" th:field="*{student.remark}" />
+  </div>
+  <div>
+    <label for="isDeleted">キャンセル:</label>
+    <input type="checkbox" id="isDeleted" th:field="*{student.Deleted}" /> <!-- isDeleted　ではダメ -->
+  </div>
+  <div th:each="course, stat : *{studentCourses}">
+    <label for="courseID"
+           th:for="studentCourses[__${stat.index}__].courseID">受講コースID: </label>
+    <input type="text" id="courseID" th:id="studentCourse[__${stat.index}__].courseID"
+           th:field="*{studentCourses[__${stat.index}__].courseID}"/>
+    <label for="courseName"
+           th:for="studentCourses[__${stat.index}__].courseName">受講コース名: </label>
+    <input type="text" id="courseName" th:id="studentCourse[__${stat.index}__].courseName"
+           th:field="*{studentCourses[__${stat.index}__].courseName}"/>
+  </div>
+  <div>
+    <button type="submit">更新</button>
+  </div>
+</form>
+
+</body>
+</html>

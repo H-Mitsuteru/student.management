@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>　<!-- 設定情報(タイトルなど)を入れる場所 -->
+  <title>受講生一覧</title>
+</head>
+<body>　<!-- 一つのHTML文章に必ず1回だけ。ページに表示される要素は全てこの中に -->
+<h1>受講生一覧</h1>　<!-- 見出し -->
+<table border="1">　<!-- tableを作る為のタグ。中にはtr、td、thを配置 -->
+  <thead>　<!-- 表のタイトル部分 -->
+  <tr> <!-- 行。各行毎に設定する -->
+    <th>ID</th>
+    <th>名前</th>
+    <th>カナ名</th>
+    <th>ニックネーム</th>
+    <th>メールアドレス</th>
+    <th>地域</th>
+    <th>年齢</th>
+    <th>性別</th>
+    <th>備考</th>
+    <th>キャンセル</th>
+  </tr>
+  </thead>
+  <tbody>　<!-- 実際のデータはここに書くのが基本 -->
+  <tr th:each="studentDetail : ${studentList}">
+    <td th:text="${studentDetail.student.studentID}">1</td>　<!-- td＝table data：セル、th=見出し用セル(太文字、中央揃え) -->
+    <td>
+<!--      <a href="/StudentList" th:href="@{/student/{studentID}(id=${studentDetail.student.studentID})}"
+         th:text="${studentDetail.student.name}">山田太郎</a> -->
+      <a th:href="@{/student/{studentID}(studentID=${studentDetail.student.studentID})}"
+         th:text="${studentDetail.student.name}">山田太郎</a>
+
+    </td>
+    <td th:text="${studentDetail.student.furigana}">ヤマダタロウ</td>
+    <td th:text="${studentDetail.student.nickname}">タロー</td>
+    <td th:text="${studentDetail.student.email}">taro@example.com</td>
+    <td th:text="${studentDetail.student.liveMunicipality}">東京</td>
+    <td th:text="${studentDetail.student.age}">20</td>
+    <td th:text="${studentDetail.student.gender}">男性</td>
+    <td th:text="${studentDetail.student.remark}">特になし</td>
+    <td>
+      <input type="checkbox" th:checked="${studentDetail.student.isDeleted}" />
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
