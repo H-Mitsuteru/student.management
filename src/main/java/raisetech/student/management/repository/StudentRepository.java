@@ -100,7 +100,8 @@ void updateStudent(Student student);
    *
    * @param studentCourse　受講生コース情報
    */
-  @Update("UPDATE students_Courses SET course_name = #{courseName} WHERE course_id = #{courseID}")
+  @Update("UPDATE students_Courses SET status = #{status}, course_name = #{courseName}, "
+  + "start_date = #{startDate}, end_date = #{endDate} WHERE course_id = #{courseID}")
 void updateStudentCourse(StudentCourse studentCourse);
 
 }

@@ -1,11 +1,14 @@
 package raisetech.student.management.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.Controller.converter.StudentConverter;
+import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -59,11 +62,17 @@ public class StudentService {
    */
   @Transactional // 登録、更新した時のエラーをロールバックしてくれる
   public StudentDetail registerStudent(StudentDetail studentDetail) {
+    // 受講生登録
     Student student = studentDetail.getStudent();
-
     repository.registerStudent(student);
+
+    // コース登録
     studentDetail.getStudentCourseList().forEach(studentCourse -> {
+      // status 初期値 (仮申込み)
+      studentCourse.setStatus(CourseStatus.仮申込み);
+      // start、end、studentID 自動セット
       initStudentsCourse(studentCourse, student.getStudentID());
+
       repository.registerStudentCourse(studentCourse);
     });
     return studentDetail;
@@ -93,6 +102,64 @@ public class StudentService {
     repository.updateStudent(studentDetail.getStudent());
     //      studentCourse.setStudentID(studentDetail.getStudent().getStudentID());
     studentDetail.getStudentCourseList()
-        .forEach(studentCourse -> repository.updateStudentCourse(studentCourse));
+        .forEach(studentCourse -> {
+          validateCourseStatus(studentCourse);
+          repository.updateStudentCourse(studentCourse);
+        });
   }
+
+//  private void validateCourseDate(StudentCourse course) {
+//    // 受講終了なら endDate 必須
+//    if (course.getStatus() == CourseStatus.受講終了 && course.getEndDate() == null) {
+//      throw new IllegalArgumentException("受講終了の場合はendDateの日付を入力してください。");
+//    }
+//
+//    if (course.getStartDate() != null && course.getEndDate() != null) {
+//      if (!course.getStartDate().isBefore(course.getEndDate())) {
+//        throw new IllegalArgumentException("開始日が終了日より前である必要があります。");
+//      }
+//    }
+//  }
+
+  private void validateCourseStatus(StudentCourse course) {
+
+    if (course.getStatus() == null) {
+      throw new IllegalArgumentException("status が指定されていません。");
+    }
+
+    // Enum に存在しない値は弾く（必須チェック＋申込みリストチェック）
+    boolean exists = Arrays.stream(CourseStatus.values())
+        .anyMatch(s -> s == course.getStatus());
+
+    if (!exists) {
+      throw new IllegalArgumentException("指定された status は無効です。使用可能な値: "
+          + Arrays.toString(CourseStatus.values()));
+    }
+  }
+
+//  private void validateRequired(StudentCourse course) {
+//
+//    CourseStatus status = course.getStatus();
+//
+//    List<String> missing = new ArrayList<>();
+//
+//    if (status.getRequiredFields().contains("courseName") && course.getCourseName() == null) {
+//      missing.add("コース名");
+//    }
+//
+//    if (status.getRequiredFields().contains("startDate") && course.getStartDate() == null) {
+//      missing.add("開始日");
+//    }
+//
+//    if (status.getRequiredFields().contains("endDate") && course.getEndDate() == null) {
+//      missing.add("終了日");
+//    }
+//
+//    if (!missing.isEmpty()) {
+//      throw new IllegalArgumentException(
+//          status.name() + " では以下が必須です: " + String.join(", ", missing)
+//      );
+//    }
+//  }
+
 }
