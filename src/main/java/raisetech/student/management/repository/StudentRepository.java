@@ -1,6 +1,7 @@
 package raisetech.student.management.repository;
 
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -31,6 +32,8 @@ public interface StudentRepository {
    */
   Student searchStudent(String id);
 
+  List<Student> searchByCondition(Map<String, String> cond);
+
   /**
    * 受講生のコース情報の全件検索を行います。
    *
@@ -47,6 +50,8 @@ public interface StudentRepository {
    */
   @Select("SELECT * FROM students_courses WHERE student_id = #{studentID}")
   List<StudentCourse> searchStudentCourse(String studentID);
+
+
 
   // 受講生登録
   //            #{studentID}, は自動生成なので省略

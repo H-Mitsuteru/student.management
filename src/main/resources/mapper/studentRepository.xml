@@ -15,4 +15,27 @@
     SELECT * FROM students WHERE student_id = #{studentID}
   </select>
 
+  <select id="searchByCondition" parameterType="map" resultType="raisetech.student.management.data.Student">
+    SELECT * FROM students
+    WHERE 1=1
+
+    <if test="studentID != null and studentID != ''">
+      AND student_id = #{studentID}
+    </if>
+
+    <if test="name != null and name != ''">
+      AND name LIKE CONCAT('%', #{name}, '%')
+    </if>
+
+    <if test="email != null and email != ''">
+      AND email LIKE CONCAT('%', #{email}, '%')
+    </if>
+
+    <if test="liveMunicipality != null and liveMunicipality != ''">
+      AND live_municipality LIKE CONCAT('%', #{liveMunicipality}, '%')
+    </if>
+
+  </select>
+
+
 </mapper>

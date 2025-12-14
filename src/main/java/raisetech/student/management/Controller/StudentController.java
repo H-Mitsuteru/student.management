@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -75,6 +77,11 @@ public class StudentController {
     studentDetail.setStudentCourseList(Arrays.asList(new StudentCourse()));
     model.addAttribute("studentDetail", studentDetail); // 中身空っぽのStudentDetailを突っ込んでおく
     return "registerStudent";
+  }
+
+  @GetMapping("/students/search")
+  public List<StudentDetail> search(@RequestParam Map<String, String> params){
+    return service.search(params);
   }
 
   /**

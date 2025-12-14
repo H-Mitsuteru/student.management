@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +53,15 @@ public class StudentService {
     List<StudentCourse> studentCourse = repository.searchStudentCourse(student.getStudentID());
     return new StudentDetail(student, studentCourse);
   }
+
+  public List<StudentDetail> search(Map<String, String> cond){
+
+    List<Student> students = repository.searchByCondition(cond);
+    List<StudentCourse> courses = repository.searchStudentCourseList();
+
+    return converter.convertStudentDetails(students, courses);
+  }
+
 
   /**
    * 受講生詳細の登録を行います。
