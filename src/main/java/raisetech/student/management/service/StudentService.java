@@ -56,6 +56,10 @@ public class StudentService {
 
   public List<StudentDetail> search(Map<String, String> cond){
 
+    // AND / OR 切替（デフォルト AND）
+    String mode = cond.getOrDefault("mode", "AND").toUpperCase();
+    cond.put("mode", mode);
+
     List<Student> students = repository.searchByCondition(cond);
     List<StudentCourse> courses = repository.searchStudentCourseList();
 

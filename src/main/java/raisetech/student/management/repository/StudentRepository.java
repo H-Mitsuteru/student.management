@@ -32,6 +32,7 @@ public interface StudentRepository {
    */
   Student searchStudent(String id);
 
+
   List<Student> searchByCondition(Map<String, String> cond);
 
   /**
