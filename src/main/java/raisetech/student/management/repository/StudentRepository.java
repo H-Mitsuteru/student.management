@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 
@@ -33,7 +34,13 @@ public interface StudentRepository {
   Student searchStudent(String id);
 
 
-  List<Student> searchByCondition(Map<String, String> cond);
+  /**
+   * 受講生の条件検索を行います。 受講生情報、受講生コース情報から条件に一致する受講生情報を取得します。
+   *
+   * @param condition　受講生検索条件（検索項目・AND/OR モードを含む）
+   * @return　検索条件に一致した受講生情報の一覧
+   */
+  List<Student> searchByCondition(StudentSearchCondition condition);
 
   /**
    * 受講生のコース情報の全件検索を行います。

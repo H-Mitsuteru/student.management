@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.javassist.NotFoundException;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.exception.TestException;
@@ -79,9 +82,18 @@ public class StudentController {
     return "registerStudent";
   }
 
+  /**
+   * 受講生情報の条件検索を行います。
+   * 指定された検索条件（受講生ID・氏名・メールアドレス・居住地・コース名・申込み状況など）をもとに、
+   * 受講生情報と受講生コース情報を検索します。
+   *
+   * @param condition 検索条件の各項目がクエリパラメータとしてバインドされます。
+   * @return 条件に一致した受講生詳細情報の一覧
+   */
   @GetMapping("/students/search")
-  public List<StudentDetail> search(@RequestParam Map<String, String> params){
-    return service.search(params);
+//  public List<StudentDetail> search(@ModelAttribute StudentSearchCondition condition){
+  public List<StudentDetail> search(@ParameterObject StudentSearchCondition condition){
+    return service.search(condition);
   }
 
   /**

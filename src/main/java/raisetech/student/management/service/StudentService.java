@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.Controller.converter.StudentConverter;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
 import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
@@ -54,15 +55,22 @@ public class StudentService {
     return new StudentDetail(student, studentCourse);
   }
 
-  public List<StudentDetail> search(Map<String, String> cond){
+  /**
+   * 受講生詳細検索です。
+   * 検索条件に一致する受講生情報を取得し、その受講生に紐づく受講生コース情報と結合して受講生詳細一覧として返却します。
+   * AND / OR の検索モードに応じて、複数条件検索が可能です。
+   * @param condition 検索条件（氏名、メール、コース名、ステータス、検索モードなど）
+   * @return 検索条件に一致した受講生詳細の一覧
+   */
+  public List<StudentDetail> search(StudentSearchCondition condition){
 
-    // AND / OR 切替（デフォルト AND）
-    String mode = cond.getOrDefault("mode", "AND").toUpperCase();
-    cond.put("mode", mode);
+    // 検索条件に基づいて受講生情報を取得
+    List<Student> students = repository.searchByCondition(condition);
 
-    List<Student> students = repository.searchByCondition(cond);
+    // 全受講生に紐づく受講生コース情報を取得
     List<StudentCourse> courses = repository.searchStudentCourseList();
 
+    // 受講生情報と受講生コース情報を結合して受講生詳細に変換
     return converter.convertStudentDetails(students, courses);
   }
 

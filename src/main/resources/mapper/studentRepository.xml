@@ -15,52 +15,75 @@
     SELECT * FROM students WHERE student_id = #{studentID}
   </select>
 
-  <!-- 条件検索 -->
-  <select id="searchByCondition" parameterType="map" resultType="raisetech.student.management.data.Student">
-    SELECT * FROM students
-    WHERE 1=1
+  <!-- 受講生検索（条件検索）
+  ・指定された検索条件のみを動的に SQL に追加する
+  ・mode = 'OR' の場合は OR 条件検索
+  ・それ以外（未指定含む）は AND 条件検索 -->
+  <select id="searchByCondition"
+          parameterType="raisetech.student.management.DataTransferObject.StudentSearchCondition"
+          resultType="raisetech.student.management.data.Student">
+
+<!--    SELECT * FROM students s だと複数コースを持つ受講生が重複してしまうのでDISTINCTで重複を削除 -->
+    SELECT DISTINCT s.*
+    FROM students s
+    LEFT JOIN students_courses sc ON s.student_id = sc.student_id
+    WHERE 1=1 <!-- =true のこと -->
     <choose>
 
       <!-- OR検索 -->
-      <when test="mode == 'OR'">
-        AND
-        <trim prefix="(" suffix=")" prefixOverrides="OR">
+      <when test="mode == @raisetech.student.management.DataTransferObject.SearchMode@OR">
+        <trim prefix="AND (" suffix=")" prefixOverrides="OR">
+            <if test="studentID != null and studentID != ''">
+              OR s.student_id = #{studentID}
+            </if>
 
-          <if test="studentID != null and studentID != ''">
-            OR student_id = #{studentID}
-          </if>
+            <if test="name != null and name != ''">
+              OR s.name LIKE CONCAT('%', #{name}, '%')
+            </if>
 
-          <if test="name != null and name != ''">
-            OR name LIKE CONCAT('%', #{name}, '%')
-          </if>
+            <if test="email != null and email != ''">
+              OR s.e_mail LIKE CONCAT('%', #{email}, '%')
+            </if>
 
-          <if test="email != null and email != ''">
-            OR e_mail LIKE CONCAT('%', #{email}, '%')
-          </if>
+            <if test="liveMunicipality != null and liveMunicipality != ''">
+              OR s.live_municipality LIKE CONCAT('%', #{liveMunicipality}, '%')
+            </if>
 
-          <if test="live_Municipality != null and liveMunicipality != ''">
-            OR live_municipality LIKE CONCAT('%', #{liveMunicipality}, '%')
-          </if>
+            <if test="courseName != null and courseName != ''">
+              OR sc.course_name LIKE CONCAT('%', #{courseName}, '%')
+            </if>
 
+            <if test="status != null">
+              OR sc.status = #{status}
+            </if>
         </trim>
       </when>
 
       <!-- AND検索(デフォルト) -->
       <otherwise>
         <if test="studentID != null and studentID != ''">
-          AND student_id = #{studentID}
+          AND s.student_id = #{studentID}
         </if>
 
         <if test="name != null and name != ''">
-          AND name LIKE CONCAT('%', #{name}, '%')
+          AND s.name LIKE CONCAT('%', #{name}, '%')
         </if>
 
         <if test="email != null and email != ''">
-          AND e_mail LIKE CONCAT('%', #{email}, '%')
+          AND s.e_mail LIKE CONCAT('%', #{email}, '%')
         </if>
 
         <if test="liveMunicipality != null and liveMunicipality != ''">
-          AND live_municipality LIKE CONCAT('%', #{liveMunicipality}, '%')
+          AND s.live_municipality LIKE CONCAT('%', #{liveMunicipality}, '%')
+        </if>
+
+        <if test="courseName != null and courseName != ''">
+          AND sc.course_name LIKE CONCAT('%', #{courseName}, '%')
+        </if>
+
+<!--        <if test="status != null and status != ''">-->
+        <if test="status != null">
+          AND sc.status = #{status}
         </if>
       </otherwise>
 

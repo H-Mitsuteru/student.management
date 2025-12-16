@@ -22,20 +22,26 @@ public enum CourseStatus {
       }
     }
 
-    // ここで表記ゆれ補正を行う（自由に追加してOK）
+    // ここで表記ゆれ補正を行う
     switch (value.trim()) {
-      case "仮申し込み":   // ← Postmanで誤字ったやつ
+      case "仮申し込み":
       case "仮申込":
+      case "仮":
         return 仮申込み;
 
       case "本申し込み":
       case "本申込":
+      case "本番":
         return 本申込み;
 
       case "終了":
+      case "完了":
+      case "受講完了":
         return 受講終了;
 
       case "受講開始":
+      case "開始":
+      case "受講":
         return 受講中;
     }
 
