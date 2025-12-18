@@ -118,19 +118,3 @@ void updateStudent(Student student);
 void updateStudentCourse(StudentCourse studentCourse);
 
 }
-
-//  @Select("SELECT * FROM students WHERE name = #{name}")
-//  Student searchByName(String name);  //ここをListに変更する↑
-
-//  @Select("SELECT * FROM students")
-//  List<Student> findAll(); // 一覧取得
-
-//  @Insert("INSERT students values(#{name}, #{age})")
-//  void registerStudent(String name, int age); // MySQLへ新情報を追加
-//
-//  @Update("UPDATE students SET age = #{age} WHERE name = #{name}")
-//  void updatestudent(String name, int age); // 情報更新、変更
-//
-//  @Delete("DELETE FROM students WHERE name = #{name}")
-//  void deleteStudent(String name); // 個別情報削除
-//}
