@@ -81,7 +81,7 @@
           AND sc.course_name LIKE CONCAT('%', #{courseName}, '%')
         </if>
 
-<!--        <if test="status != null and status != ''">-->
+  <!--  <if test="status != null and status != ''"> -->
         <if test="status != null">
           AND sc.status = #{status}
         </if>

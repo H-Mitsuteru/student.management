@@ -2,8 +2,6 @@ package raisetech.student.management.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
-import java.util.List;
-import lombok.Getter;
 
 public enum CourseStatus {
   仮申込み,
@@ -52,23 +50,3 @@ public enum CourseStatus {
     );
   }
 }
-
-
-//public enum CourseStatus {
-//
-//  仮申込み("仮申込み"),
-//  本申込み("本申込み"),
-//  受講中("受講中"),
-//  受講終了("受講終了");
-//
-//  private final String label;
-//
-//  CourseStatus(String label) {
-//    this.label = label;
-//  }
-//
-//  public String getLabel() {
-//    return label;
-//  }
-//
-//}

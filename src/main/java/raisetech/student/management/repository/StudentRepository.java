@@ -82,12 +82,14 @@ public interface StudentRepository {
    */
   @Insert("""
         INSERT INTO students_Courses (
+            status,
             student_id,
             course_name,
             start_date,
             end_date
         )
         VALUES(
+            #{status},
             #{studentID},
             #{courseName},
             #{startDate},

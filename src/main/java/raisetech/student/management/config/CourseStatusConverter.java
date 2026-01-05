@@ -10,8 +10,8 @@ import raisetech.student.management.data.CourseStatus;
  * CourseStatus enum に変換するために使用されます。
  * 主な用途：
  * <ul>
- *   <li>検索APIの QueryParam（@ModelAttribute）</li>
- *   <li>AND / OR 条件検索時の status 指定</li>
+ *   <li> 検索APIの QueryParam（@ModelAttribute）</li>
+ *   <li> AND / OR 条件検索時の status 指定 </li>
  * </ul>
  * この Converter を定義することで、
  * 表記ゆれ（例：「仮申込み」「仮申し込み」「仮申込」）を

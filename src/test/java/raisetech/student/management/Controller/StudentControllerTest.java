@@ -2,8 +2,6 @@ package raisetech.student.management.Controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -16,11 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -28,15 +23,19 @@ import jakarta.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
+import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
+import raisetech.student.management.repository.StudentRepository;
 import raisetech.student.management.service.StudentService;
 
 @WebMvcTest(StudentController.class)
@@ -45,8 +44,12 @@ class StudentControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  @MockitoBean
+  @MockBean
   private StudentService service;
+
+  @MockBean
+  StudentRepository repository;
+
 
   private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -68,6 +71,86 @@ class StudentControllerTest {
 
     verify(service, times(1)).searchStudent(id);
   }
+
+  @Test
+  void 仮申込みで検索が出来て該当する情報が返ってくること() throws Exception {
+
+    // given
+    Student student = new Student();
+    student.setStudentID("1");
+    student.setName("山田 太郎");
+
+    StudentCourse course = new StudentCourse();
+    course.setStatus(CourseStatus.仮申込み);
+
+    StudentDetail detail =
+        new StudentDetail(student, List.of(course));
+
+    when(service.search(any(StudentSearchCondition.class)))
+        .thenReturn(List.of(detail));
+
+    // when & then
+    mockMvc.perform(get("/students/search")
+            .param("status", "仮申込み"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].student.studentID").value("1"))
+        .andExpect(jsonPath("$[0].student.name").value("山田 太郎"))
+        .andExpect(jsonPath("$[0].studentCourseList[0].status").value("仮申込み"));
+
+    verify(service).search(any(StudentSearchCondition.class));
+  }
+
+  @Test
+  void 氏名とコース名を指定した場合に検索できること() throws Exception {
+
+    // given
+    Student student = new Student();
+    student.setStudentID("2");
+    student.setName("山田 修");
+
+    StudentDetail detail =
+        new StudentDetail(student, List.of());
+
+    when(service.search(any(StudentSearchCondition.class)))
+        .thenReturn(List.of(detail));
+
+    // when & then
+    mockMvc.perform(get("/students/search")
+            .param("name", "山田")
+            .param("courseName", "Java"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].student.name").value("山田 修"));
+  }
+
+  @Test
+  void OR検索モードで検索できること() throws Exception {
+
+    // given
+    when(service.search(any(StudentSearchCondition.class)))
+        .thenReturn(List.of());
+
+    // when & then
+    mockMvc.perform(get("/students/search")
+            .param("name", "山田")
+            .param("email", "example.com")
+            .param("mode", "OR"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  void 検索条件なしでもエラーにならないこと() throws Exception {
+
+    // given
+    when(service.search(any(StudentSearchCondition.class)))
+        .thenReturn(List.of());
+
+    // when & then
+    mockMvc.perform(get("/students/search"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray());
+  }
+
 
   @Test
   void 受講生詳細の登録が実行できて空で返ってくること() throws Exception {
@@ -297,10 +380,6 @@ void registerStudent_正常系_登録成功して200が返る() throws Exception
         .andExpect(status().isOk())
         .andExpect(content().string("更新処理が成功しました。"));
   }
-
-
-
-
 
   // 入力チェック
   @Test

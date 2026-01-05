@@ -142,20 +142,3 @@ public class StudentController {
   }
 
 }
-
-//  @ExceptionHandler(TestException.class)
-//  public ResponseEntity<String> handleTestException(TestException ex) {
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-//  }
-//}
-
-//  @GetMapping("/studentsCourseList")
-//  public List<StudentsCourses> getStudentsCourseList() {
-//    return service.searchStudentsCourseList();
-//  }
-
-//  @GetMapping("/newStudentCourse")
-//  public String newStudentCourse(Model model) {
-//    model.addAttribute("studentDetail", new StudentDetail());
-//    return "registerStudentCourse";
-//  }

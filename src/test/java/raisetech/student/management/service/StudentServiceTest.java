@@ -1,5 +1,6 @@
 package raisetech.student.management.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -12,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import raisetech.student.management.Controller.converter.StudentConverter;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
+import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -80,6 +84,42 @@ class StudentServiceTest {
   }
 
   @Test
+  @DisplayName("status を指定した場合、受講生詳細が返却されること")
+  void search_byCourseStatus() {
+
+    // given
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setStatus(CourseStatus.仮申込み);
+
+    Student student = new Student(); // createStudent("1", "山田 太郎");
+      student.setStudentID("1");
+      student.setName("山田 太郎");
+    List<Student> students = List.of(student);
+
+    StudentCourse course = new StudentCourse(); //createStudentCourse("1", CourseStatus.仮申込み);
+      course.setStudentID("1");
+      course.setStatus(CourseStatus.仮申込み); //.setStatus.仮申込み;
+    List<StudentCourse> courses = List.of(course);
+
+    StudentDetail detail = new StudentDetail(student, List.of(course));
+    List<StudentDetail> expected = List.of(detail);
+
+    when(repository.searchByCondition(condition)).thenReturn(students);
+    when(repository.searchStudentCourseList()).thenReturn(courses);
+    when(converter.convertStudentDetails(students, courses)).thenReturn(expected);
+
+    // when
+    List<StudentDetail> actual = sut.search(condition);
+
+    // then
+    assertThat(actual).isEqualTo(expected);
+
+    verify(repository).searchByCondition(condition);
+    verify(repository).searchStudentCourseList();
+    verify(converter).convertStudentDetails(students, courses);
+  }
+
+  @Test
   void 受講生詳細の登録_リポジトリの処理が適切に呼び出せていること() {
     Student student = new Student();
     StudentCourse studentCourse = new StudentCourse();
@@ -110,6 +150,8 @@ class StudentServiceTest {
   void 受講生詳細の更新_リポジトリの処理が適切に呼び出せていること() {
     Student student = new Student();
     StudentCourse studentCourse = new StudentCourse();
+    studentCourse.setStatus(CourseStatus.仮申込み);
+
     List<StudentCourse> studentCourseList = List.of(studentCourse);
     StudentDetail studentDetail = new StudentDetail(student, studentCourseList);
 
@@ -118,8 +160,6 @@ class StudentServiceTest {
     verify(repository, times(1)).updateStudent(student);
     verify(repository, times(1)).updateStudentCourse(studentCourse);
   }
-
-
 
 /* 以下は自分で作成した場合 */
   @Test
@@ -161,8 +201,6 @@ class StudentServiceTest {
     assertEquals(student, actual.getStudent());
     assertEquals(courseList, actual.getStudentCourseList());
   }
-
-
 
   @Test
   void 受講生登録_受講生とコースが正しく登録されること() {
@@ -220,11 +258,13 @@ class StudentServiceTest {
 
     StudentCourse sc1 = new StudentCourse();
     sc1.setCourseID("101");
+    sc1.setStatus(CourseStatus.仮申込み);
     sc1.setStudentID("20");
     sc1.setCourseName("Java");
 
     StudentCourse sc2 = new StudentCourse();
     sc2.setCourseID("102");
+    sc2.setStatus(CourseStatus.本申込み);
     sc2.setStudentID("20");
     sc2.setCourseName("Spring");
 

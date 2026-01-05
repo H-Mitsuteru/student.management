@@ -130,19 +130,6 @@ public class StudentService {
         });
   }
 
-//  private void validateCourseDate(StudentCourse course) {
-//    // 受講終了なら endDate 必須
-//    if (course.getStatus() == CourseStatus.受講終了 && course.getEndDate() == null) {
-//      throw new IllegalArgumentException("受講終了の場合はendDateの日付を入力してください。");
-//    }
-//
-//    if (course.getStartDate() != null && course.getEndDate() != null) {
-//      if (!course.getStartDate().isBefore(course.getEndDate())) {
-//        throw new IllegalArgumentException("開始日が終了日より前である必要があります。");
-//      }
-//    }
-//  }
-
   private void validateCourseStatus(StudentCourse course) {
 
     if (course.getStatus() == null) {
@@ -158,30 +145,4 @@ public class StudentService {
           + Arrays.toString(CourseStatus.values()));
     }
   }
-
-//  private void validateRequired(StudentCourse course) {
-//
-//    CourseStatus status = course.getStatus();
-//
-//    List<String> missing = new ArrayList<>();
-//
-//    if (status.getRequiredFields().contains("courseName") && course.getCourseName() == null) {
-//      missing.add("コース名");
-//    }
-//
-//    if (status.getRequiredFields().contains("startDate") && course.getStartDate() == null) {
-//      missing.add("開始日");
-//    }
-//
-//    if (status.getRequiredFields().contains("endDate") && course.getEndDate() == null) {
-//      missing.add("終了日");
-//    }
-//
-//    if (!missing.isEmpty()) {
-//      throw new IllegalArgumentException(
-//          status.name() + " では以下が必須です: " + String.join(", ", missing)
-//      );
-//    }
-//  }
-
 }

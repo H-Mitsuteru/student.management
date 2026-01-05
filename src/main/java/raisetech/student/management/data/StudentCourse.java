@@ -38,5 +38,4 @@ public class StudentCourse {
   @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
   private LocalDateTime endDate;
 
-
 }
