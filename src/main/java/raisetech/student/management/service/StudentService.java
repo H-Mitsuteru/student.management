@@ -1,11 +1,16 @@
 package raisetech.student.management.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.Controller.converter.StudentConverter;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
+import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -51,6 +56,26 @@ public class StudentService {
   }
 
   /**
+   * 受講生詳細検索です。
+   * 検索条件に一致する受講生情報を取得し、その受講生に紐づく受講生コース情報と結合して受講生詳細一覧として返却します。
+   * AND / OR の検索モードに応じて、複数条件検索が可能です。
+   * @param condition 検索条件（氏名、メール、コース名、ステータス、検索モードなど）
+   * @return 検索条件に一致した受講生詳細の一覧
+   */
+  public List<StudentDetail> search(StudentSearchCondition condition){
+
+    // 検索条件に基づいて受講生情報を取得
+    List<Student> students = repository.searchByCondition(condition);
+
+    // 全受講生に紐づく受講生コース情報を取得
+    List<StudentCourse> courses = repository.searchStudentCourseList();
+
+    // 受講生情報と受講生コース情報を結合して受講生詳細に変換
+    return converter.convertStudentDetails(students, courses);
+  }
+
+
+  /**
    * 受講生詳細の登録を行います。
    * 受講生と受講生コース情報を個別に登録し、受講生コース情報には受講生情報を紐づける値とコース開始日、コース終了日を設定します。
    *
@@ -59,11 +84,17 @@ public class StudentService {
    */
   @Transactional // 登録、更新した時のエラーをロールバックしてくれる
   public StudentDetail registerStudent(StudentDetail studentDetail) {
+    // 受講生登録
     Student student = studentDetail.getStudent();
-
     repository.registerStudent(student);
+
+    // コース登録
     studentDetail.getStudentCourseList().forEach(studentCourse -> {
+      // status 初期値 (仮申込み)
+      studentCourse.setStatus(CourseStatus.仮申込み);
+      // start、end、studentID 自動セット
       initStudentsCourse(studentCourse, student.getStudentID());
+
       repository.registerStudentCourse(studentCourse);
     });
     return studentDetail;
@@ -93,6 +124,25 @@ public class StudentService {
     repository.updateStudent(studentDetail.getStudent());
     //      studentCourse.setStudentID(studentDetail.getStudent().getStudentID());
     studentDetail.getStudentCourseList()
-        .forEach(studentCourse -> repository.updateStudentCourse(studentCourse));
+        .forEach(studentCourse -> {
+          validateCourseStatus(studentCourse);
+          repository.updateStudentCourse(studentCourse);
+        });
+  }
+
+  private void validateCourseStatus(StudentCourse course) {
+
+    if (course.getStatus() == null) {
+      throw new IllegalArgumentException("status が指定されていません。");
+    }
+
+    // Enum に存在しない値は弾く（必須チェック＋申込みリストチェック）
+    boolean exists = Arrays.stream(CourseStatus.values())
+        .anyMatch(s -> s == course.getStatus());
+
+    if (!exists) {
+      throw new IllegalArgumentException("指定された status は無効です。使用可能な値: "
+          + Arrays.toString(CourseStatus.values()));
+    }
   }
 }

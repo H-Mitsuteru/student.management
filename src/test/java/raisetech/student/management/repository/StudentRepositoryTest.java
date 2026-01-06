@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import raisetech.student.management.DataTransferObject.SearchMode;
+import raisetech.student.management.DataTransferObject.StudentSearchCondition;
+import raisetech.student.management.data.CourseStatus;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 
@@ -15,6 +19,7 @@ class StudentRepositoryTest {
 
   @Autowired
   private StudentRepository sut;
+//  private StudentRepository repository;
 
   // search
   @Test
@@ -37,6 +42,66 @@ class StudentRepositoryTest {
     assertThat(actual.getLiveMunicipality()).isEqualTo("岐阜市水海道");
     assertThat(actual.getAge()).isEqualTo(52);
     assertThat(actual.getGender()).isEqualTo("男");
+  }
+
+  @Test
+  void 条件未指定の場合に受講生を全件取得できること() {
+    StudentSearchCondition condition = new StudentSearchCondition();
+
+    List<Student> actual = sut.searchByCondition(condition);
+    assertThat(actual.size()).isEqualTo(7);
+  }
+
+  @Test
+  void studentIDを指定した場合に該当する受講生のみ取得できること() {
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setStudentID("1");
+
+    List<Student> actual = sut.searchByCondition(condition);
+
+    assertThat(actual).hasSize(1);
+    assertThat(actual.get(0).getStudentID()).isEqualTo("1");
+  }
+
+  @Test
+  void nameを指定した場合に部分一致検索できること() {
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setName("山田");
+
+    List<Student> actual = sut.searchByCondition(condition);
+
+    assertThat(actual).isNotEmpty();
+    assertThat(actual).allMatch(student -> student.getName().contains("山田"));
+    assertThat(actual.get(0).getName()).isEqualTo("山田 修");
+    assertThat(actual.size()).isEqualTo(1);
+  }
+
+  @Test
+  void OR検索の場合いずれかの条件に一致する受講生が取得できること() {
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setName("山田");
+    condition.setEmail("ayumi@");
+    condition.setMode(SearchMode.OR);
+
+    List<Student> actual = sut.searchByCondition(condition);
+
+    assertThat(actual).isNotEmpty();
+    assertThat(actual.get(0).getName()).isEqualTo("山田 修");
+    assertThat(actual.get(1).getName()).isEqualTo("古川 歩");
+    assertThat(actual.size()).isEqualTo(2);
+  }
+
+  @Test
+  void statusを指定した場合に該当コースを持つ受講生が取得できること() {
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setStatus(CourseStatus.仮申込み);
+
+    List<Student> actual = sut.searchByCondition(condition);
+
+    assertThat(actual).isNotEmpty();
+    assertThat(actual.get(0).getName()).isEqualTo("林 弥津輝");
+    assertThat(actual.get(1).getName()).isEqualTo("山田 修");
+    assertThat(actual.size()).isEqualTo(2);
   }
 
   // searchStudentCourseList
