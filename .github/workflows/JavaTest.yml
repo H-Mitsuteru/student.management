@@ -21,7 +21,7 @@ env:
   # 送信元
   SRC_PASS: 'build/libs/*.jar'
   # 送信先へ上記の名前を変更してjarファイルを作成
-  DEST_PATH: 'home/ec2-user/StudentManagement.jar'
+  DEST_PATH: '/home/ec2-user/StudentManagement.jar'
 
 jobs:
   # 実行名(任意)
