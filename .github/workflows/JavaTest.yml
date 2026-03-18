@@ -13,14 +13,27 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  build:
+# EC2の環境変数設定
+env:
+  EC2_USER: 'ec2-user'
+  # EC2の接続アドレス(毎回接続する度に変わるけど・・・？)
+  EC2_HOST: '13.113.37.232'
+  # 送信元
+  SRC_PASS: 'build/libs/*.jar'
+  # 送信先へ上記の名前を変更してjarファイルを作成
+  DEST_PATH: 'home/ec2-user/StudentManagement.jar'
 
+jobs:
+  # 実行名(任意)
+  deploy:
+    # 実行するコンテナ：使用するOS
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
+    # permissions:　<- 権限：今回はCD実装で read は削除する
+    #  contents: read
 
     steps:
+    # ubuntu に対する便利ツール(コード)が下記設定により、詳細設定をしなくても自動的にsetingされる
     - uses: actions/checkout@v4
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -37,7 +50,54 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build with Gradle Wrapper
+    - name: Test with Gradle Wrapper
       run: ./gradlew test
 
+    - name: Build with Gradle Wrapper
+      run: ./gradlew bootJar
 
+    - name: SCP Copy Application to ec2
+      env:
+        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+      run: | # パイプ -> 連続でコマンドを実行出来る様になる (private_keyを書き込む -> 権限600付与 / Yes,Noの確認をしない / DESTへ接続設定を送る)
+        echo "PRIVATE_KEY" > private_key && chmod 600 private_key
+        scp -o StrictHostKeyChecking=no -i private_key $SRC_PATH $EC2_USER@$EC2_HOST:$DEST_PATH
+
+    - name: SSH Application Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ${{ env.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        envs: DEST_PATH
+        # 以下のフォルダ先にファイルを作成する -> 既に存在する場合は実行しない
+        # Linuxは絶対パス指定の為、必ず先頭は/から始まる。 etcは、Linuxの設定ファイル用フォルダ)
+        script: |
+          sudo yum update -y
+          if [ -f /etc/systemd/system/StudentManagement.service ]; then
+            echo "already exists Service File"
+          else
+          cat <<EOL | sudo tee -a /etc/systemd/system/StudentManagement.service
+          [Unit]
+          Description = StudentManagement App
+          
+          [Service]
+          ExecStart = java -jar ${DEST_PATH}
+          EnvironmentFile = /etc/sysconfig/StudentManagement
+          Restart = no
+          Type = simple
+          User = ec2-user
+          Group = ec2-user
+          SuccessExitStatus = 143
+          
+          [Install]
+          WantedBy = multi-user.target
+          EOL
+          fi
+          
+          sudo systemctl daemon-reload
+          if sudo systemctl status StudentManagement 2>&1 | grep "Active: active (running)" ; then
+            sudo systemctl restart StudentManagement
+          else
+            sudo systemctl start StudentManagement
+          fi
